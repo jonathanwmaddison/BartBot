@@ -49,6 +49,7 @@ app.post('/webhook', (req, res) => {
 });
 
 app.post('/ai', (req, res) => {
+	console.log(req.body.result.action)
 	if (req.body.result.action === 'weather') {
 		getWeather(res, req)
 	} else if (req.body.result.action === 'announcements') {
