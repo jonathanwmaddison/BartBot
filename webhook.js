@@ -100,6 +100,7 @@ function getWeather(res, req) {
 	let apikey = process.env.WEATHER_API_KEY;
 	let units = "imperial"
 	let resturl = 'http://api.openweathermap.org/data/2.5/weather?APPID='+apikey+'&q='+city+'&units='+units;
+	console.log(resturl)
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
