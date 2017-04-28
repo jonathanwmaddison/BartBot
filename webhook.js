@@ -49,7 +49,6 @@ app.post('/webhook', (req, res) => {
 });
 
 app.post('/ai', (req, res) => {
-	console.log(req.body.result.action, 'action')
 	if (req.body.result.action === 'weather') {
 		getWeather(res, req)
 	} else if (req.body.result.action === 'announcements') {
@@ -59,7 +58,6 @@ app.post('/ai', (req, res) => {
 	} else if (req.body.result.action === 'allstations') {
 		getAllStations(res)
 	} else if (req.body.result.action === 'fromto') {
-		console.log(req.body.result)
 		getConnectionData(res, {start: req.body.result.parameters.abbr, destination: req.body.result.parameters.abbr1})
 	}
 })
@@ -104,6 +102,7 @@ function getWeather(res, req) {
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
+			console.log(json)
 			let msg = "The current condition in " + city  + " is " + json.weather[0].description + ' and the temperature is ' + json.main.temp + ' ℉';
 			return res.json({
 				speech: msg,
@@ -212,7 +211,6 @@ function getConnectionData(res, abbr) {
 
 	//TODO allow more flexibility in system. Currently only takes station abbreviations.	
 	let resturl = 'http://bart.crudworks.org/api/tickets/'+abbr.start+'/'+abbr.destination;
-	console.log(resturl)
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			console.log(body)
