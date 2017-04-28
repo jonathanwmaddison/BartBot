@@ -97,7 +97,7 @@ function sendMessage(event) {
 
 function getWeather(res, req) {
 	let city = req.body.result.parameters['geo-city-us'];
-	let apikey = process.env.WEATHER_API_KEY;
+	let apikey = process.env.WEATHER_API;
 	let units = "imperial"
 	let resturl = 'http://api.openweathermap.org/data/2.5/weather?APPID='+apikey+'&q='+city+'&units='+units;
 	console.log(resturl)
