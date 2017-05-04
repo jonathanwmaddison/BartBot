@@ -26,11 +26,11 @@ const apiaiApp = apiai(process.env.AI_TOKEN);
 
 /* packages required for BART API */
 var cors = require('cors')
-var xmlParser = require('xml2js')
 var path = require('path')
 var async = require('async')
 var _ = require('lodash')
 var every = require('schedule').every
+var BART = require('./BART/BART')
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -57,7 +57,9 @@ app.post('/webhook', (req, res) => {
         res.status(200).end();
     }
 });
+app.get('/ai', (req, res) => {
 
+})
 app.post('/ai', (req, res) => {
 	console.log(req.body.result.action)
 	if (req.body.result.action === 'weather') {
@@ -132,26 +134,26 @@ function getWeather(res, req) {
 	})
 }
 function getServiceAnnouncements(res) {
-	let resturl = 'http://bart.crudworks.org/api/serviceAnnouncements'
-	request.get(resturl, (err, response, body) => {
-		if(!err && response.statusCode === 200) {
-			let json = JSON.parse(body);
-			let msg = "Current BART Announcements at " + json.time + " on " + json.date + ": "+json.bsa.map((announcement) => "/n station: " + announcement.station + " type: " + announcement.type + " description: " + announcement.description);
-			return res.json({
-				speech: msg,
-				displayText: msg,
-				source: 'announcements'
-			})
-		} else {
-			return res.status(400).json({
+  BART.getServiceAnnouncements( function callback(err, body){
+    if(err){
+      return res.status(400).json({
 				status: {
 					code: 400,
 					errorType: 'I failed to find any announcements.'
 				}
 			})
-		}
-	})
+    } else {
+      let json = JSON.parse(body);
+      let msg = "Current BART Announcements at " + json.time + " on " + json.date + ": "+json.bsa.map((announcement) => "/n station: " + announcement.station + " type: " + announcement.type + " description: " + announcement.description);
+      return res.json({
+        speech: msg,
+        displayText: msg,
+        source: 'announcements'
+      })
+    }
+  })
 }
+
 function getLatLong(location, callback, res) {
 	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='
 	let searchLocation = encodeURI(location + ", CA");

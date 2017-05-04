@@ -1,9 +1,15 @@
+var BART = (function BARTModule(){
+
+
 /* BART API variables */
 var bartApiBaseUrl = 'http://api.bart.gov/api';
 // This is a demo key use environment if possible
 var bartApiKey = process.env.BART_API_KEY || 'MW9S-E7SL-26DU-VV8V';
+var apiContext = '/api';
 var bartApiTimeout = 10000;
 var stationsInfo = undefined;
+var httpRequest = require('request')
+var xmlParser = require('xml2js')
 
 var infoCache = {
 	stationList: undefined,
@@ -44,32 +50,6 @@ var infoCache = {
 	}
 };
 
-function getDistance(latUser, lonUser, latStation, lonStation) {
-	var R = 6371;
-	var dLat = (latStation - latUser).toRad();
-	var dLon = (lonStation - lonUser).toRad();
-	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        	Math.cos(latStation.toRad()) * Math.cos(latUser.toRad()) *
-        	Math.sin(dLon / 2) * Math.sin(dLon / 2);
-	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	var d = R * c;
-
-	return d * 0.621371;
-};
-
-function getStationName(abbr) {
-	var stations = infoCache.getStationList().station;
-	var n = 0;
-
-	for (n = 0; n < stations.length; n++) {
-		if (stations[n].abbr === abbr) {
-			return stations[n].name;
-		}
-	}
-
-	return undefined;
-}
-
 function buildHttpRequestOptions(requestUrl) {
 	return {
 		uri: bartApiBaseUrl + '/' + requestUrl + '&key=' + bartApiKey,
@@ -79,3 +59,35 @@ function buildHttpRequestOptions(requestUrl) {
 		maxRedirects: 10
 	};
 };
+
+function getServiceAnnouncements( cb ){
+  httpRequest(
+    buildHttpRequestOptions('bsa.aspx?cmd=bsa&date=today'),
+    function(error, resp, body) {
+      // TODO non happy path
+      var xmlServiceAnnouncements = xmlParser.parseString(body, { trim: true, explicitArray: false }, function(err, res) {
+        if (err){
+          return cb(err)
+        }
+        var newArray = [];
+
+        // Fix single bsa to be an array
+        if (! Array.isArray(res.root.bsa)) {
+          newArray.push(res.root.bsa);
+          res.root.bsa = newArray;
+        }
+
+        res.root.bsa = res.root.bsa.reverse();
+
+        return cb(null, res.root)
+      });
+    }
+  );
+}
+
+return {
+  getServiceAnnouncements: getServiceAnnouncements
+}
+
+})()
+module.exports = BART
