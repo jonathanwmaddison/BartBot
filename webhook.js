@@ -1,21 +1,22 @@
 /*
 	Resources that were used to build this prototype
 
-		https://api.ai/		
+		https://api.ai/
 			~ Helps take user input and categorize it. Also provides access to conversational UI AI
-		http://bart.crudworks.org/api/		
+		http://bart.crudworks.org/api/
 			~ This API is a simpler more user friendly interface for Bart.
-		http://www.girliemac.com/blog/2017/01/06/facebook-apiai-bot-nodejs/  
+		http://www.girliemac.com/blog/2017/01/06/facebook-apiai-bot-nodejs/
 			~ this is a helpful tutorial
-		ngrok: 
-			~ this provides https/SSL, a requirement of Facebook messenger	
+		ngrok:
+			~ this provides https/SSL, a requirement of Facebook messenger
 
 	Other Notes
-	
+
 		https://github.com/simonprickett/bartfbchatbot -> Simon also built a chatbot which could be useful to follow along with. Current Implementation makes use of his API which could be modified and improved on.
 
 */
-
+'use strict';
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -23,6 +24,15 @@ const request = require('request');
 const apiai = require('apiai');
 const apiaiApp = apiai(process.env.AI_TOKEN);
 
+/* packages required for BART API */
+var cors = require('cors')
+var xmlParser = require('xml2js')
+var path = require('path')
+var async = require('async')
+var _ = require('lodash')
+var every = require('schedule').every
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -66,7 +76,7 @@ app.post('/ai', (req, res) => {
 function sendMessage(event) {
 	let sender = event.sender.id;
 	let text = event.message.text;
-	
+
 	//set set up of api.ai
 	let apiai = apiaiApp.textRequest(text, {
 		sessionId: 'tuxedo_cat'
@@ -140,7 +150,7 @@ function getServiceAnnouncements(res) {
 				}
 			})
 		}
-	})	
+	})
 }
 function getLatLong(location, callback, res) {
 	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='
@@ -185,7 +195,7 @@ function fetchStation(lat, lng, res) {
 	})
 }
 function getClosestStation(res, location) {
-	getLatLong(location, fetchStation, res)	
+	getLatLong(location, fetchStation, res)
 
 }
 function getAllStations (res) {
@@ -207,17 +217,17 @@ function getAllStations (res) {
 				}
 			})
 		}
-	})	
+	})
 }
 function getConnectionData(res, abbr) {
 
-	//TODO allow more flexibility in system. Currently only takes station abbreviations.	
+	//TODO allow more flexibility in system. Currently only takes station abbreviations.
 	let resturl = 'http://bart.crudworks.org/api/tickets/'+abbr.start+'/'+abbr.destination;
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			console.log(body)
 			let json = JSON.parse(body);
-			let msg = "The next train from " + json.origin +" to "+ json.destination + " is at "+ json.schedule.request.trip.details.origTimeMin; 
+			let msg = "The next train from " + json.origin +" to "+ json.destination + " is at "+ json.schedule.request.trip.details.origTimeMin;
 			return res.json({
 				speech: msg,
 				displayText: msg,
@@ -231,7 +241,7 @@ function getConnectionData(res, abbr) {
 				}
 			})
 		}
-	})	
+	})
 
 }
 //SERVER
