@@ -27,9 +27,6 @@ const apiaiApp = apiai(process.env.AI_TOKEN);
 /* packages required for BART API */
 var cors = require('cors')
 var path = require('path')
-var async = require('async')
-var _ = require('lodash')
-var every = require('schedule').every
 var BART = require('./BART/BART')
 
 app.use(cors());
@@ -57,9 +54,7 @@ app.post('/webhook', (req, res) => {
         res.status(200).end();
     }
 });
-app.get('/ai', (req, res) => {
 
-})
 app.post('/ai', (req, res) => {
 	console.log(req.body.result.action)
 	if (req.body.result.action === 'weather') {
@@ -133,8 +128,9 @@ function getWeather(res, req) {
 		}
 	})
 }
+
 function getServiceAnnouncements(res) {
-  BART.getServiceAnnouncements( function callback(err, body){
+  BART.getServiceAnnouncements( function callback(err, json){
     if(err){
       return res.status(400).json({
 				status: {
@@ -143,7 +139,6 @@ function getServiceAnnouncements(res) {
 				}
 			})
     } else {
-      let json = JSON.parse(body);
       let msg = "Current BART Announcements at " + json.time + " on " + json.date + ": "+json.bsa.map((announcement) => "/n station: " + announcement.station + " type: " + announcement.type + " description: " + announcement.description);
       return res.json({
         speech: msg,
@@ -154,73 +149,49 @@ function getServiceAnnouncements(res) {
   })
 }
 
-function getLatLong(location, callback, res) {
-	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='
+function getClosestStation(res, location) {
 	let searchLocation = encodeURI(location + ", CA");
-	resturl+=searchLocation;
+  let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
 			let lat = json.results[0].geometry.location.lat;
 			let lng = json.results[0].geometry.location.lng;
-			callback(lat, lng, res)
-			return
-		} else {
-			return res.status(400).json({
-				status: {
-					code: 400,
-					errorType: 'I failed to find a station.'
-				}
-			})
-		}
-	});
+			BART.stationByLocation(lat, lng, function callback(err, json){
+        if(err){
+      		return res.status(400).json({
+      			status: {
+      			code: 400,
+      			errorType: 'I failed to find a station.'
+      		  }
+          })
+        } else {
+          let msg = "The closest station is " + json.name + " on " + json.address + " in "+json.city+". It is "+Math.ceil(json.distance)+" miles away";
+          return res.json({
+            speech: msg,
+            displayText: msg,
+            source: 'station'
+          })
+        }
+	    });
+    }
+  })
 }
-function fetchStation(lat, lng, res) {
-	let resturl = 'http://bart.crudworks.org/api/station/'+lat+'/'+lng;
-	request.get(resturl, (err, response, body) => {
-		if(!err && response.statusCode === 200) {
-			let json = JSON.parse(body);
-			let msg = "The closest station is " + json.name + " on " + json.address + " in "+json.city+". It is "+Math.ceil(json.distance)+" miles away";
-			return res.json({
-				speech: msg,
-				displayText: msg,
-				source: 'station'
-			})
-		} else {
-			return res.status(400).json({
-				status: {
-					code: 400,
-					errorType: 'I failed to find a station.'
-				}
-			})
-		}
-	})
-}
-function getClosestStation(res, location) {
-	getLatLong(location, fetchStation, res)
 
-}
 function getAllStations (res) {
-	let resturl = 'http://bart.crudworks.org/api/stations'
-	request.get(resturl, (err, response, body) => {
-		if(!err && response.statusCode === 200) {
-			let json = JSON.parse(body);
-			let msg = "Bart stations:  " + json.map ((station) => " "+ station.abbr);
-			return res.json({
-				speech: msg,
-				displayText: msg,
-				source: 'allstations'
-			})
-		} else {
-			return res.status(400).json({
-				status: {
-					code: 400,
-					errorType: 'I failed to find any announcements.'
-				}
-			})
-		}
-	})
+  BART.getStations( function callback(err, json){
+    if (err) console.log(err)
+    else{
+      let msg = "Bart stations:  " + json.map ((station) => " "+ station.abbr);
+      return res.json({
+        speech: msg,
+        displayText: msg,
+        source: 'allstations'
+      })
+    }
+  })
 }
+
 function getConnectionData(res, abbr) {
 
 	//TODO allow more flexibility in system. Currently only takes station abbreviations.
