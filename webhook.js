@@ -193,30 +193,26 @@ function getAllStations (res) {
 }
 
 function getConnectionData(res, abbr) {
-
-	//TODO allow more flexibility in system. Currently only takes station abbreviations.
-	let resturl = 'http://bart.crudworks.org/api/tickets/'+abbr.start+'/'+abbr.destination;
-	request.get(resturl, (err, response, body) => {
-		if(!err && response.statusCode === 200) {
-			console.log(body)
-			let json = JSON.parse(body);
-			let msg = "The next train from " + json.origin +" to "+ json.destination + " is at "+ json.schedule.request.trip.details.origTimeMin;
-			return res.json({
-				speech: msg,
-				displayText: msg,
-				source: 'fromto'
-			})
-		} else {
+  BART.getConnectionData(abbr, function callback(err, json){
+    if (err){
 			return res.status(400).json({
 				status: {
 					code: 400,
 					errorType: 'I failed to find any connection.'
 				}
 			})
-		}
-	})
+		} else {
+      let msg = "The next train from " + json.origin +" to "+ json.destination + " is at "+ json.schedule.request.trip.details.origTimeMin;
+			return res.json({
+				speech: msg,
+				displayText: msg,
+				source: 'fromto'
+			})
 
+    }
+  })
 }
+
 //SERVER
 const server = app.listen(process.env.PORT || 5000, () => {
     console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
