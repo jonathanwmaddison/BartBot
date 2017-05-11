@@ -1,0 +1,112 @@
+/**************************
+*  GENERAL
+**************************/
+.wrap{
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.off-canvas-wrapper{
+}
+.mobile-menu{
+  background-color: #44afe7;
+  color: white;
+}
+.mobile-menu li{
+  list-style: none;
+}
+.mobile-menu a{
+  color: rgba(255,255,255, .9);
+  line-height: 2;
+}
+.mobile-menu a:hover{
+  color: rgba(255,255,255, 1);
+}
+.title-bar .menu-icon{
+  margin: 15px;
+}
+/**************************
+*  NAV MOBILE
+**************************/
+.title-bar{
+  background-color: #44afe7;
+  height: 60px;
+  padding: 0;
+  font-size: 18px;
+}
+.title-bar-left{
+  line-height: 60px;
+  padding: 0;
+  margin: 0;
+
+}
+/**************************
+*  NAV DESKTOP
+**************************/
+.nav-desktop{
+    background-color: #44afe7;
+    height: 80px;
+    padding: 0
+}
+.site-logo{
+  color: #fff;
+  line-height: 80px;
+}
+.nav-desktop
+.menu-desktop{
+  background-color: transparent;
+}
+.menu li a{
+  display: inline-block;
+  color: #fff;
+  line-height: 80px;
+  padding: 0 10px;
+  background-color: transparent;
+}
+.menu li a:hover{
+  background-color: rgba(255,255,255,.1)
+}
+/**************************
+*  HERO
+**************************/
+.hero{
+  text-align: center;
+  padding: 80px 0;
+  background-color: #d4d4d4;
+  background-image: url('../img/hex.png')
+}
+.hero p,
+.hero h1{
+  text-align: left;
+  color: rgba(0,0,0, .75);
+  max-width: 80%;
+}
+/**************************
+*  MAIN
+**************************/
+.main{
+  padding: 80px 0;
+  color: #fff;
+  background-color: #8e44ad;
+}
+.main hr{
+  border-bottom: 1px solid rgba(255,255,255, .2)
+}
+/**************************
+*  FOOTER
+**************************/
+
+.footer{
+  /*background-color: #006699;*/
+  background-color: #333;
+  padding: 80px 0;
+  color: rgba(255,255,255, .8)
+}
+/**************************
+* MEDIA-QUERY
+**************************/
+@media (max-width: 639px){
+  .nav-desktop{
+    display: none;
+  }
+}

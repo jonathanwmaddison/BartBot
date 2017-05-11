@@ -1,3 +1,5 @@
+'use strict'
+
 var httpRequest = require('request')
 var xmlParser = require('xml2js')
 var async = require('async')
