@@ -78,6 +78,23 @@ app.post('/ai', (req, res) => {
 		getConnectionData(res, {start: req.body.result.parameters.abbr, destination: req.body.result.parameters.abbr1})
 	}
 })
+function sendToMessenger(sender, text) {
+	request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: process.env.FACEBOOK_TOKEN},
+        method: 'POST',
+        json: {
+            recipient: {id: sender},
+            message: {text: text}
+        }
+    }, function (error, response) {
+        if(error) {
+            console.log('Error sending message: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    });
+}
 
 function sendMessage(event) {
 	let sender = event.sender.id;
@@ -88,22 +105,8 @@ function sendMessage(event) {
 		sessionId: 'tuxedo_cat'
 	});
 	apiai.on('response', (response) => {
-	let aiText = response.result.fulfillment.speech;
-	request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token: process.env.FACEBOOK_TOKEN},
-        method: 'POST',
-        json: {
-            recipient: {id: sender},
-            message: {text: aiText}
-        }
-    }, function (error, response) {
-        if(error) {
-            console.log('Error sending message: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    	});
+		let aiText = response.result.fulfillment.speech;
+		sendToMessenger(sender, aiText)
 	});
 	apiai.on('error', (error) => {
 		console.log(error)
