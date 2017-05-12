@@ -68,8 +68,7 @@ app.post('/ai', (req, res) => {
 		getServiceAnnouncements(res)
 	} else if (req.body.result.action === 'station') {
 		if(req.body.result.parameters.streetaddress === ""){
-			console.log(req.body)
-			sendLocationButton(res)
+			sendLocationButton(res, req.body.id)
 		} else {
 			getClosestStation(res, req.body.result.parameters.streetaddress)
 		}
@@ -79,14 +78,14 @@ app.post('/ai', (req, res) => {
 		getConnectionData(res, {start: req.body.result.parameters.abbr, destination: req.body.result.parameters.abbr1})
 	}
 })
-function sendToMessenger(sender, text) {
+function sendToMessenger(sender, message) {
 	request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.FACEBOOK_TOKEN},
         method: 'POST',
         json: {
             recipient: {id: sender},
-            message: {text: text}
+            message: message
         }
     }, function (error, response) {
         if(error) {
@@ -107,7 +106,8 @@ function sendMessage(event) {
 	});
 	apiai.on('response', (response) => {
 		let aiText = response.result.fulfillment.speech;
-		sendToMessenger(sender, aiText)
+		let message = {text: aiText}
+		sendToMessenger(sender, message)
 	});
 	apiai.on('error', (error) => {
 		console.log(error)
@@ -120,11 +120,9 @@ function getWeather(res, req) {
 	let apikey = process.env.WEATHER_API;
 	let units = "imperial"
 	let resturl = 'http://api.openweathermap.org/data/2.5/weather?APPID='+apikey+'&q='+city+'&units='+units;
-	console.log(resturl)
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
-			console.log(json)
 			let msg = "The current condition in " + city  + " is " + json.weather[0].description + ' and the temperature is ' + json.main.temp + ' ℉';
 			return res.json({
 				speech: msg,
@@ -191,23 +189,19 @@ function getClosestStation(res, location) {
     }
   })
 }
-function sendLocationButton(res) {
+function sendLocationButton(res, id) {
 	console.log('location button operating')
-	console.log(res)
 	let msg = 'Please share your location:';
 	let quick_replies = [
 		{
 			content_type: "location",
 		}
 	]
-	return console.log(res.json({
-		speech: msg,
-		displayText: msg,
-		message: {
-			text: msg,
-			quick_replies: quick_replies
-		}	
-	}))
+	let message = {
+		text: msg,
+		quick_replies: quick_replies
+	}
+	return sendToMessenger(id, message)
 }
 
 function getAllStations (res) {
