@@ -67,7 +67,11 @@ app.post('/ai', (req, res) => {
 	} else if (req.body.result.action === 'announcements') {
 		getServiceAnnouncements(res)
 	} else if (req.body.result.action === 'station') {
-		getClosestStation(res, req.body.result.parameters.streetaddress)
+		if(req.body.result.parameters.streetaddress === ""){
+			sendLocationButton(res)
+		} else {
+			getClosestStation(res, req.body.result.parameters.streetaddress)
+		}
 	} else if (req.body.result.action === 'allstations') {
 		getAllStations(res)
 	} else if (req.body.result.action === 'fromto') {
@@ -156,7 +160,8 @@ function getServiceAnnouncements(res) {
 
 function getClosestStation(res, location) {
 	let searchLocation = encodeURI(location + ", CA");
-  let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
+  	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
+	
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
@@ -182,7 +187,21 @@ function getClosestStation(res, location) {
     }
   })
 }
+function sendLocationButton(res) {
+	let msg = 'Please share your location:';
+	let quick_replies = [
+		{
+			content_type: "location",
+		}
+	]
+	return res.json({
+			message: {
+				text: msg,
+				quick_replies: quick_replies	
+			}
+	})
 
+}
 function getAllStations (res) {
   BART.getStations( function callback(err, json){
     if (err) console.log(err)
