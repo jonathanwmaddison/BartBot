@@ -52,6 +52,7 @@ app.post('/webhook', (req, res) => {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 if (event.message && event.message.text) {
+                	console.log(event)
                     sendMessage(event);
                 }
             });
