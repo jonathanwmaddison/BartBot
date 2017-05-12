@@ -188,6 +188,8 @@ function getClosestStation(res, location) {
   })
 }
 function sendLocationButton(res) {
+	console.log('location button operating')
+	console.log(res)
 	let msg = 'Please share your location:';
 	let quick_replies = [
 		{
