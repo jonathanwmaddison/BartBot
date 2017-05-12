@@ -196,14 +196,14 @@ function sendLocationButton(res) {
 			content_type: "location",
 		}
 	]
-	return res.json({
+	return console.log(res.json({
 		speech: msg,
 		displayText: msg,
 		message: {
 			text: msg,
 			quick_replies: quick_replies
 		}	
-	})
+	}))
 }
 
 function getAllStations (res) {
