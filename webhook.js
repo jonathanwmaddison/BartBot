@@ -101,8 +101,6 @@ function sendToMessenger(sender, message) {
 function sendMessage(event) {
 	let sender = event.sender.id;
 	let text = event.message.text;
-	//
-	let initialTextProcessing = processInitialText(event.)
 	//set set up of api.ai
 	let apiai = apiaiApp.textRequest(text, {
 		sessionId: 'tuxedo_cat',
