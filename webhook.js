@@ -196,8 +196,9 @@ function sendLocationButton(res) {
 			content_type: "location",
 		}
 	]
-	return res.message = {
-		text: msg,
+	return res.json = {
+		speech: msg,
+		displayText: msg,
 		quick_replies: quick_replies	
 	}
 }
