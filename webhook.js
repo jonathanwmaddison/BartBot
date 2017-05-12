@@ -121,6 +121,7 @@ function getWeather(res, req) {
 	let apikey = process.env.WEATHER_API;
 	let units = "imperial"
 	let resturl = 'http://api.openweathermap.org/data/2.5/weather?APPID='+apikey+'&q='+city+'&units='+units;
+	console.log(res.json)
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
@@ -190,7 +191,7 @@ function getClosestStation(res, location) {
     }
   })
 }
-function sendLocationButton(res, id) {
+function sendLocationButton(id) {
 	console.log('location button operating')
 	console.log(id)
 	let msg = 'Please share your location:';
