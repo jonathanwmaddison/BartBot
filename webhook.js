@@ -69,7 +69,7 @@ app.post('/ai', (req, res) => {
 		getServiceAnnouncements(res)
 	} else if (req.body.result.action === 'station') {
 		if(req.body.result.parameters.streetaddress === ""){
-			sendLocationButton(req.body.id)
+			sendLocationButton(res)
 		} else {
 			getClosestStation(res, req.body.result.parameters.streetaddress)
 		}
@@ -101,7 +101,8 @@ function sendToMessenger(sender, message) {
 function sendMessage(event) {
 	let sender = event.sender.id;
 	let text = event.message.text;
-
+	//
+	let initialTextProcessing = processInitialText(event.)
 	//set set up of api.ai
 	let apiai = apiaiApp.textRequest(text, {
 		sessionId: 'tuxedo_cat',
@@ -109,6 +110,7 @@ function sendMessage(event) {
 	});
 	apiai.on('response', (response) => {
 		let aiText = response.result.fulfillment.speech;
+		console.log(response.result.fulfillment.message)
 		let message = {text: aiText}
 		sendToMessenger(sender, message)
 	});
@@ -193,9 +195,9 @@ function getClosestStation(res, location) {
     }
   })
 }
-function sendLocationButton(id) {
+
+function sendLocationButton(res) {
 	console.log('location button operating')
-	console.log(id)
 	let msg = 'Please share your location:';
 	let quick_replies = [
 		{
@@ -206,7 +208,9 @@ function sendLocationButton(id) {
 		text: msg,
 		quick_replies: quick_replies
 	}
-	return sendToMessenger(id, message)
+	return res.json({
+		message: message,
+	})
 }
 
 function getAllStations (res) {
