@@ -68,6 +68,7 @@ app.post('/ai', (req, res) => {
 		getServiceAnnouncements(res)
 	} else if (req.body.result.action === 'station') {
 		if(req.body.result.parameters.streetaddress === ""){
+			console.log(req)
 			sendLocationButton(res)
 		} else {
 			getClosestStation(res, req.body.result.parameters.streetaddress)
