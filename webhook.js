@@ -196,20 +196,10 @@ function getClosestStation(res, location) {
 
 function sendLocationButton(res) {
 	console.log('location button operating')
-	let msg = 'Please share your location:';
-	let quick_replies = [
-		{
-			content_type: "location",
-		}
-	]
-	let message = {
-		text: msg,
-		quick_replies: quick_replies
-	}
 	return res.json({
-		message: message,
-		displayText: msg,
-		speech: msg,
+		type: 2, //quick reply type
+		title: 'location',
+		replies: ['Share']
 	})
 }
 
