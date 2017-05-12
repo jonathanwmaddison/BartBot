@@ -199,8 +199,10 @@ function sendLocationButton(res) {
 	return res.json({
 		speech: msg,
 		displayText: msg,
-		message: msg,
-		quick_replies: quick_replies	
+		message: {
+			text: msg,
+			quick_replies: quick_replies
+		}	
 	})
 }
 
