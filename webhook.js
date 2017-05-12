@@ -52,7 +52,7 @@ app.post('/webhook', (req, res) => {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 if (event.message && event.message.text) {
-                	console.log(event)
+                	console.log()
                     sendMessage(event);
                 }
             });
@@ -69,7 +69,7 @@ app.post('/ai', (req, res) => {
 		getServiceAnnouncements(res)
 	} else if (req.body.result.action === 'station') {
 		if(req.body.result.parameters.streetaddress === ""){
-			sendLocationButton(res, req.body.id)
+			sendLocationButton(req.id)
 		} else {
 			getClosestStation(res, req.body.result.parameters.streetaddress)
 		}
@@ -88,7 +88,8 @@ function sendToMessenger(sender, message) {
         json: {
             recipient: {id: sender},
             message: message
-        }
+        },
+        id: sender
     }, function (error, response) {
         if(error) {
             console.log('Error sending message: ', error);
