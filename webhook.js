@@ -194,14 +194,12 @@ function sendLocationButton(res) {
 			content_type: "location",
 		}
 	]
-	return res.json({
-			message: {
-				text: msg,
-				quick_replies: quick_replies	
-			}
-	})
-
+	return res.message = {
+		text: msg,
+		quick_replies: quick_replies	
+	}
 }
+
 function getAllStations (res) {
   BART.getStations( function callback(err, json){
     if (err) console.log(err)
