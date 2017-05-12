@@ -208,6 +208,8 @@ function sendLocationButton(res) {
 	}
 	return res.json({
 		message: message,
+		displayText: msg,
+		speech: msg,
 	})
 }
 
