@@ -108,7 +108,7 @@ function sendMessage(event) {
 	});
 	apiai.on('response', (response) => {
 		let aiText = response.result.fulfillment.speech;
-		console.log(response.result.fulfillment)
+		console.log(response.result.fulfillment, 'FULFILLMENT')
 		let message = {text: aiText}
 		sendToMessenger(sender, message)
 	});
