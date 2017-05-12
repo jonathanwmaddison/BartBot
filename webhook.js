@@ -89,7 +89,6 @@ function sendToMessenger(sender, message) {
             recipient: {id: sender},
             message: message
         },
-        id: sender
     }, function (error, response) {
         if(error) {
             console.log('Error sending message: ', error);
@@ -105,7 +104,8 @@ function sendMessage(event) {
 
 	//set set up of api.ai
 	let apiai = apiaiApp.textRequest(text, {
-		sessionId: 'tuxedo_cat'
+		sessionId: 'tuxedo_cat',
+		test: 'hello'
 	});
 	apiai.on('response', (response) => {
 		let aiText = response.result.fulfillment.speech;
