@@ -110,7 +110,7 @@ function sendMessage(event) {
 		let aiText = {text: response.result.fulfillment.speech}; //aiText is used if it is simple text response
 		let message = response.result.fulfillment.messages[0] ? response.result.fulfillment.messages[0] : aiText
 		if (message.replies) {
-			message = {text: 'Please share your location', quick_replies: message.replies}
+			message = {text: 'Please share your location', quick_replies: [content_type: 'location']}
 		}
 		console.log(response.result.fulfillment, 'FULFILLMENT')
 		sendToMessenger(sender, message)
