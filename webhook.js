@@ -7,8 +7,6 @@
 			~ This API is a simpler more user friendly interface for Bart.
 		http://www.girliemac.com/blog/2017/01/06/facebook-apiai-bot-nodejs/
 			~ this is a helpful tutorial
-		ngrok:
-			~ this provides https/SSL, a requirement of Facebook messenger
 
 	Other Notes
 
@@ -108,7 +106,7 @@ function sendMessage(event) {
 	});
 	apiai.on('response', (response) => {
 		let aiText = {text: response.result.fulfillment.speech}; //aiText is used if it is simple text response
-		let message = response.result.fulfillment.messages[0] ? response.result.fulfillment.messages[0] : aiText
+		let message = response.result.fulfillment.messages[0].type === 2 ? response.result.fulfillment.messages[0] : aiText
 		if (message.replies) {
 			message = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
 		}
