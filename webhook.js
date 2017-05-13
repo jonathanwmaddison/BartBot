@@ -69,7 +69,7 @@ app.post('/ai', (req, res) => {
 		getServiceAnnouncements(res)
 	} else if (req.body.result.action === 'station') {
 		if(req.body.result.parameters.streetaddress === ""){
-			//sendLocationButton(res)
+			sendLocationButton(res)
 		} else {
 			getClosestStation(res, req.body.result.parameters.streetaddress)
 		}
@@ -196,10 +196,11 @@ function getClosestStation(res, location) {
 
 function sendLocationButton(res) {
 	console.log('location button operating')
+	let msg = 'Share your Location'
 	return res.json({
-		type: 2, //quick reply type
-		title: 'location',
-		replies: ['Share']
+		speech: msg,
+		displayText:  msg,
+		source: 'station'
 	})
 }
 
