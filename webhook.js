@@ -197,11 +197,7 @@ function getClosestStation(res, location) {
 function sendLocationButton(res) {
 	console.log('location button operating')
 	let msg = 'Share your Location'
-	return res.json({
-		speech: msg,
-		displayText:  msg,
-		source: 'station'
-	})
+	return res.json()
 }
 
 function getAllStations (res) {
