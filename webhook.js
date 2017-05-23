@@ -50,7 +50,6 @@ app.post('/webhook', (req, res) => {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 if (event.message && event.message.text) {
-                	console.log()
                     sendMessage(event);
                 }
             });
@@ -198,7 +197,25 @@ function getClosestStation(res, location) {
 function sendLocationButton(res) {
 	console.log('location button operating')
 	let msg = 'Share your Location'
-	return res.json()
+	return res.json({
+   "data": {
+      "facebook": {
+         "text": "Pick a color:",
+         "quick_replies": [
+            {
+               "content_type": "text",
+               "title": "Red",
+               "payload": "red"
+            },
+            {
+               "content_type": "text",
+               "title": "Green",
+               "payload": "green"
+            }
+         ]
+      }
+   }
+})
 }
 
 function getAllStations (res) {
