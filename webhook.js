@@ -74,6 +74,7 @@ function preProcessAIResponses(req, res) {
 			getServiceAnnouncements(res);
 			break;
 		case 'station':
+			console.log(res.body)
 			getClosestStation(res, req.body.result.parameters.streetaddress);
 			break;
 		case 'allstations':
@@ -140,7 +141,6 @@ function getWeather(res, req) {
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
-			console.log(json)
 			let msg = "The current condition in " + city  + " is " + json.weather[0].description + ' and the temperature is ' + json.main.temp + ' ℉';
 			return res.json({
 				speech: msg,
