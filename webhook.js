@@ -111,7 +111,6 @@ function sendToAI(event) {
         } else if (response.body.error) {
             console.log('Error: ', response.body.error)
         }
-    	});
 	});
 	apiai.on('error', (error) => {
 		console.log(error)
