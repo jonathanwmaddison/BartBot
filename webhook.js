@@ -198,12 +198,13 @@ function getAllStations (res) {
   BART.getStations( function callback(err, json){
     if (err) console.log(err)
     else{
-	console.log(json)
+	console.log(json, "from getAllStations")
       let msg = "Bart stations:  " + json.map ((station) => " "+ station.abbr);
-      return res.json({
-        speech: msg,
-        displayText: msg,
-        source: 'allstations'
+      	console.log(msg, "msg")
+		return res.json({
+        	speech: msg,
+        	displayText: msg,
+        	source: 'allstations'
       })
     }
   })
