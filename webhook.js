@@ -74,7 +74,7 @@ function preProcessAIResponses(req, res) {
 			getServiceAnnouncements(res);
 			break;
 		case 'station':
-			console.log(res.body)
+			console.log(req.body)
 			getClosestStation(res, req.body.result.parameters.streetaddress);
 			break;
 		case 'allstations':
