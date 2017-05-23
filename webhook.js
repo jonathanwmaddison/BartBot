@@ -91,8 +91,8 @@ function handleAISuccess(response, sender){
 	let message = {
 		text: aiText
 	}
-	let sender = {id: sender}	
-	sendToMessenger(message, sender)
+	let id = {id: sender}	
+	sendToMessenger(message, id)
 }
 
 function sendToAI(event) {
