@@ -52,7 +52,7 @@ app.post('/webhook', (req, res) => {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 if (event.message && event.message.text) {
-                    sendMessage(event);
+                    sendToAI(event);
                 }
             });
         });
@@ -61,6 +61,7 @@ app.post('/webhook', (req, res) => {
 });
 
 app.post('/ai', (req, res) => {
+	console.log(res)
 	console.log(req.body.result.action)
 	if (req.body.result.action === 'weather') {
 		getWeather(res, req)
@@ -74,18 +75,7 @@ app.post('/ai', (req, res) => {
 		getConnectionData(res, {start: req.body.result.parameters.abbr, destination: req.body.result.parameters.abbr1})
 	}
 })
-
-function sendMessage(event) {
-	let sender = event.sender.id;
-	let text = event.message.text;
-
-	//set set up of api.ai
-	let apiai = apiaiApp.textRequest(text, {
-		sessionId: 'tuxedo_cat'
-	});
-	apiai.on('response', (response) => {
-	let aiText = response.result.fulfillment.speech;
-	console.log(response)
+function sendToMessenger(message, sender) {
 	request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.FACEBOOK_TOKEN},
@@ -94,6 +84,27 @@ function sendMessage(event) {
             recipient: {id: sender},
             message: {text: aiText}
         }
+	})
+}
+function handleAISuccess(response, sender){
+	let aiText = response.result.fulfillment.speech;
+	let message = {
+		text: aiText
+	}
+	let sender = {id: sender}	
+	sendToMessenger(message, sender)
+}
+
+function sendToAI(event) {
+	let sender = event.sender.id;
+	let text = event.message.text;
+
+	//set set up of api.ai
+	let apiai = apiaiApp.textRequest(text, {
+		sessionId: 'tuxedo_cat'
+	});
+	apiai.on('response', (response) => {
+		handleAISuccess(response, sender)
     }, function (error, response) {
         if(error) {
             console.log('Error sending message: ', error);
