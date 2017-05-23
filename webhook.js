@@ -63,7 +63,6 @@ app.post('/webhook', (req, res) => {
 app.post('/ai', (req, res) => {
 	console.log(req.body.result.action)
 	preProcessAIResponses(req, res);
-	}
 });
 
 function preProcessAIResponses(req, res) {
