@@ -62,18 +62,33 @@ app.post('/webhook', (req, res) => {
 
 app.post('/ai', (req, res) => {
 	console.log(req.body.result.action)
-	if (req.body.result.action === 'weather') {
-		getWeather(res, req)
-	} else if (req.body.result.action === 'announcements') {
-		getServiceAnnouncements(res)
-	} else if (req.body.result.action === 'station') {
-		getClosestStation(res, req.body.result.parameters.streetaddress)
-	} else if (req.body.result.action === 'allstations') {
-		getAllStations(res)
-	} else if (req.body.result.action === 'fromto') {
-		getConnectionData(res, {start: req.body.result.parameters.abbr, destination: req.body.result.parameters.abbr1})
+	preProcessAIResponses(req, res);
 	}
-})
+});
+
+function preProcessAIResponses(req, res) {
+	switch (req.body.result.action) {
+		case 'weather':
+			getWeather(res, req);
+			break;
+		case 'announcements':
+			getServiceAnnouncements(res);
+			break;
+		case 'station':
+			getClosestStation(res, req.body.result.parameters.streetaddress);
+			break;
+		case 'allstations':
+			getAllStations(res);
+			break;
+		case 'fromto':
+			let start = req.body.result.parameters.abbr;
+			let destination = req.body.result.parameters.abbr1;
+			getConnectionData(res, {start: start, destination: destination});
+			break;
+		default:
+			console.log('no processing necessary')
+	}
+}
 function sendToMessenger(message, sender) {
 	console.log(message)
 	request({
@@ -165,7 +180,6 @@ function getServiceAnnouncements(res) {
 }
 
 function getClosestStation(res, location) {
-	console.log('get closest running', location)
 	let searchLocation = encodeURI(location + ", CA");
   	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
 	request.get(resturl, (err, response, body) => {
@@ -198,9 +212,7 @@ function getAllStations (res) {
   BART.getStations( function callback(err, json){
     if (err) console.log(err)
     else{
-	console.log(json, "from getAllStations")
       let msg = "Bart stations:  " + json.map ((station) => " "+ station.abbr);
-      	console.log(msg, "msg")
 		return res.json({
         	speech: msg,
         	displayText: msg,
