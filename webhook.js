@@ -61,7 +61,6 @@ app.post('/webhook', (req, res) => {
 });
 
 app.post('/ai', (req, res) => {
-	console.log(res)
 	console.log(req.body.result.action)
 	if (req.body.result.action === 'weather') {
 		getWeather(res, req)
@@ -76,6 +75,7 @@ app.post('/ai', (req, res) => {
 	}
 })
 function sendToMessenger(message, sender) {
+	console.log(message)
 	request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.FACEBOOK_TOKEN},
@@ -167,7 +167,7 @@ function getServiceAnnouncements(res) {
 
 function getClosestStation(res, location) {
 	let searchLocation = encodeURI(location + ", CA");
-  let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
+  	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
 	request.get(resturl, (err, response, body) => {
 		if(!err && response.statusCode === 200) {
 			let json = JSON.parse(body);
@@ -198,6 +198,7 @@ function getAllStations (res) {
   BART.getStations( function callback(err, json){
     if (err) console.log(err)
     else{
+	console.log(json)
       let msg = "Bart stations:  " + json.map ((station) => " "+ station.abbr);
       return res.json({
         speech: msg,
