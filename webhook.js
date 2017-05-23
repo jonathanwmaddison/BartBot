@@ -81,8 +81,8 @@ function sendToMessenger(message, sender) {
         qs: {access_token: process.env.FACEBOOK_TOKEN},
         method: 'POST',
         json: {
-            recipient: {id: sender},
-            message: {text: aiText}
+            recipient: sender,
+            message: message
         }
 	})
 }
