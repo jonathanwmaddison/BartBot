@@ -101,9 +101,9 @@ function sendToMessenger(message, sender) {
 	})
 }
 function handleAISuccess(response, sender){
-	
 	let aiText = response.result.fulfillment.speech;
 	let message;
+	console.log(response, 'from ai success')
 	typeof aiText === 'object' ? message = aiText :
 		message = {
 			text: aiText
@@ -182,7 +182,7 @@ function getServiceAnnouncements(res) {
 function getClosestStation(res, location) {
 	if(location === '') {
 		var button = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
-		console.log(location);
+		console.log(button);
 		return res.json({
 			speech: button,
 			displayText: button,
