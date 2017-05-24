@@ -23,7 +23,7 @@ const app = express();
 const request = require('request');
 const apiai = require('apiai');
 const apiaiApp = apiai(process.env.AI_TOKEN);
-import { getServiceAnnouncements } from './helpers/helpers'
+const getServiceAnnouncements = require('./helpers/helpers')
 
 /* packages required for BART API */
 var cors = require('cors')
