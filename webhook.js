@@ -74,7 +74,6 @@ function preProcessAIResponses(req, res) {
 			getServiceAnnouncements(res);
 			break;
 		case 'station':
-			console.log(req.body)
 			getClosestStation(res, req.body.result.parameters.streetaddress);
 			break;
 		case 'allstations':
@@ -183,6 +182,7 @@ function getServiceAnnouncements(res) {
 function getClosestStation(res, location) {
 	if(location === '') {
 		var button = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
+		console.log(location);
 		return res.json({
 			speech: button,
 			source: 'station'
