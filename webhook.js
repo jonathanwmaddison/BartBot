@@ -23,7 +23,7 @@ const app = express();
 const request = require('request');
 const apiai = require('apiai');
 const apiaiApp = apiai(process.env.AI_TOKEN);
-const { getServiceAnnouncements } = require('./helpers/helpers')
+const { getServiceAnnouncements, getWeather } = require('./helpers/aiResponseProcessors')
 
 /* packages required for BART API */
 var cors = require('cors')
@@ -147,32 +147,6 @@ function sendToAI(event) {
 	});
 	apiai.end();
 }
-
-function getWeather(res, req) {
-	let city = req.body.result.parameters['geo-city-us'];
-	let apikey = process.env.WEATHER_API;
-	let units = "imperial"
-	let resturl = 'http://api.openweathermap.org/data/2.5/weather?APPID='+apikey+'&q='+city+'&units='+units;
-	request.get(resturl, (err, response, body) => {
-		if(!err && response.statusCode === 200) {
-			let json = JSON.parse(body);
-			let msg = "The current condition in " + city  + " is " + json.weather[0].description + ' and the temperature is ' + json.main.temp + ' ℉';
-			return res.json({
-				speech: msg,
-				displayText: msg,
-				source: 'weather'
-			});
-		} else {
-			return res.status(400).json({
-				status: {
-					code: 400,
-					errorType: 'I failed to look up the city name.'
-				}
-			})
-		}
-	})
-}
-
 
 function getClosestStation(res, location) {
 	if(location === '') {
