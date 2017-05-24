@@ -55,7 +55,7 @@ app.post('/webhook', (req, res) => {
 				if(event.message.attachments){
 					event.message.attachments.forEach((attachment) => {
 						handleUserLocation({lat: attachment.payload.lat, long: attachment.payload.long}, event.message.sender.id);
-					}
+					})
 				}
                 if (event.message && event.message.text) {
                     sendToAI(event);
