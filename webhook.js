@@ -101,6 +101,7 @@ function sendToMessenger(message, sender) {
 	})
 }
 function handleAISuccess(response, sender){
+	console.log(response)
 	let aiText = response.result.fulfillment.speech;
 	let type = response.result.fulfillment.type;
 	let message;
