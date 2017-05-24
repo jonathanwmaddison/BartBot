@@ -185,6 +185,7 @@ function getClosestStation(res, location) {
 		console.log(location);
 		return res.json({
 			speech: button,
+			displayText: button,
 			source: 'station'
 		});
 	}
