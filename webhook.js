@@ -72,7 +72,7 @@ app.post('/ai', (req, res) => {
 });
 
 function handleUserLocation(location, user) {
-	BART.stationByLocation(location.lat, location.lng, function callback(err, json){
+	BART.stationByLocation(location.lat, location.long, function callback(err, json){
 		if(err){
 			console.log(err)
 		} else {
