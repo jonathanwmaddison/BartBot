@@ -127,7 +127,6 @@ function handleAISuccess(response, sender){
 }
 
 function sendToAI(event) {
-	console.log(event)
 	let sender = event.sender.id;
 	let text = event.message.text;
 	//set set up of api.ai
