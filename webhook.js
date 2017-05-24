@@ -48,10 +48,14 @@ app.get('/webhook', (req, res) => {
 });
 
 app.post('/webhook', (req, res) => {
-	console.log(req)
     if(req.body.object === 'page') {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
+				if(event.message.attachments){
+					event.message.attachments.forEach((attachment) => {
+						handleUserLocation({lat: attachment.payload.lat, long: attachment.payload.long}, event.message.sender.id);
+					}
+				}
                 if (event.message && event.message.text) {
                     sendToAI(event);
                 }
@@ -66,6 +70,16 @@ app.post('/ai', (req, res) => {
 	preProcessAIResponses(req, res);
 });
 
+function handleUserLocation(location, user) {
+	BART.stationByLocation(location.lat, location.lng, function callback(err, json){
+		if(err){
+			console.log(err)
+		} else {
+			let msg = "The closest station is " + json.name + " on " + json.address + " in "+json.city+". It is "+Math.ceil(json.distance)+" miles away";
+			return sendToMessenger({text: msg}, {id: user})
+		}
+	})
+}
 function preProcessAIResponses(req, res) {
 	switch (req.body.result.action) {
 		case 'weather':
