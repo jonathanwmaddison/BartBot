@@ -181,7 +181,7 @@ function getServiceAnnouncements(res) {
 function getClosestStation(res, location) {
 	if(location === '') {
 		return res.json({
-			speech: 'LOCATION,
+			speech: 'LOCATION',
 			source: 'station',
 		});
 	}
