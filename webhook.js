@@ -102,10 +102,12 @@ function sendToMessenger(message, sender) {
 	})
 }
 function handleAISuccess(response, sender){
+	
 	let aiText = response.result.fulfillment.speech;
-	let message = {
-		text: aiText
-	}
+	typeof aiText === 'object' ? let message = aiText :
+		let message = {
+			text: aiText
+		}
 	let id = {id: sender}	
 	sendToMessenger(message, id)
 }
@@ -113,7 +115,6 @@ function handleAISuccess(response, sender){
 function sendToAI(event) {
 	let sender = event.sender.id;
 	let text = event.message.text;
-
 	//set set up of api.ai
 	let apiai = apiaiApp.textRequest(text, {
 		sessionId: 'tuxedo_cat'
@@ -179,6 +180,12 @@ function getServiceAnnouncements(res) {
 }
 
 function getClosestStation(res, location) {
+	if(searchLocation === '') {
+		res.json({
+			speech: {text: 'Please share your location', quick_replies: [{content_type: 'location'}]},
+			source: 'station'
+		})
+	}
 	let searchLocation = encodeURI(location + ", CA");
   	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
 	request.get(resturl, (err, response, body) => {
@@ -187,24 +194,24 @@ function getClosestStation(res, location) {
 			let lat = json.results[0].geometry.location.lat;
 			let lng = json.results[0].geometry.location.lng;
 			BART.stationByLocation(lat, lng, function callback(err, json){
-        if(err){
-      		return res.status(400).json({
-      			status: {
-      			code: 400,
-      			errorType: 'I failed to find a station.'
-      		  }
-          })
-        } else {
-          let msg = "The closest station is " + json.name + " on " + json.address + " in "+json.city+". It is "+Math.ceil(json.distance)+" miles away";
-          return res.json({
-            speech: msg,
-            displayText: msg,
-            source: 'station'
-          })
-        }
-	    });
-    }
-  })
+        		if(err){
+      				return res.status(400).json({
+      					status: {
+      						code: 400,
+      						errorType: 'I failed to find a station.'
+      		  			}
+          			})
+        		} else {
+          			let msg = "The closest station is " + json.name + " on " + json.address + " in "+json.city+". It is "+Math.ceil(json.distance)+" miles away";
+          			return res.json({
+            			speech: msg,
+            			displayText: msg,
+            			source: 'station'
+          			})
+        		}
+	    	});
+    	}
+  	});
 }
 
 function getAllStations (res) {
