@@ -1,5 +1,7 @@
 const BART = require('../BART/BART');
-export function getServiceAnnouncements(res) {
+const aiResponseProcessors ={}
+
+aiResponseProcessors.getServiceAnnouncements = function (res) {
   BART.getServiceAnnouncements( function callback(err, json){
     if(err){
       return res.status(400).json({
@@ -18,3 +20,4 @@ export function getServiceAnnouncements(res) {
     }
   })
 }
+module.exports = aiResponseProcessors;
