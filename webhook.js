@@ -105,7 +105,7 @@ function handleAISuccess(response, sender){
 	let id = {id: sender}	
 	if(aiText === 'LOCATION') {
 		let button = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
-		return sendToMessenger(message, id);
+		return sendToMessenger(button, id);
 	}
 	let message = { text: aiText}
 	sendToMessenger(message, id)
