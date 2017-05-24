@@ -102,12 +102,11 @@ function sendToMessenger(message, sender) {
 }
 function handleAISuccess(response, sender){
 	console.log(response)
-	let aiText = response.result.fulfillment.speech;
+	let aiText = response.result.fulfillment.messages;
+	console.log(aiText, 'testing messages');
 	let type = response.result.fulfillment.type;
 	let message;
-	console.log(type, 'from ai success')
 	type === 'quick_replies' ? message = aiText : message = { text: aiText}
-	console.log('message from ai sucess', message)
 	let id = {id: sender}	
 	sendToMessenger(message, id)
 }
