@@ -103,7 +103,7 @@ function sendToMessenger(message, sender) {
 function handleAISuccess(response, sender){
 	let aiText = response.result.fulfillment.speech;
 	let message;
-	console.log(aiText, 'from ai success')
+	console.log(typeof aiText, 'from ai success')
 	typeof aiText === 'object' ? message = aiText : message = { text: aiText}
 	console.log('message from ai sucess', message)
 	let id = {id: sender}	
