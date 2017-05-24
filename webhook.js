@@ -182,10 +182,11 @@ function getServiceAnnouncements(res) {
 
 function getClosestStation(res, location) {
 	if(location === '') {
-		res.json({
-			speech: {text: 'Please share your location', quick_replies: [{content_type: 'location'}]},
+		var button = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
+		return res.json({
+			speech: button,
 			source: 'station'
-		})
+		});
 	}
 	let searchLocation = encodeURI(location + ", CA");
   	let resturl = 'http://maps.google.com/maps/api/geocode/json?address='+searchLocation;
