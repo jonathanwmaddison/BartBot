@@ -51,7 +51,6 @@ app.post('/webhook', (req, res) => {
     if(req.body.object === 'page') {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
-				console.log(event)
 				if(event.message.attachments){
 					event.message.attachments.forEach((attachment) => {
 						handleUserLocation(attachment.payload.coordinates, event.sender.id);
