@@ -101,13 +101,13 @@ function sendToMessenger(message, sender) {
 	})
 }
 function handleAISuccess(response, sender){
-	console.log(response)
-	let aiText = response.result.fulfillment.messages;
-	console.log(aiText, 'testing messages');
-	let type = response.result.fulfillment.type;
-	let message;
-	type === 'quick_replies' ? message = aiText : message = { text: aiText}
+	var aiText = response.result.fulfillment.speech
 	let id = {id: sender}	
+	if(aiText === 'LOCATION') {
+		let button = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
+		return sendToMessenger(message, id);
+	}
+	let message = { text: aiText}
 	sendToMessenger(message, id)
 }
 
@@ -180,13 +180,9 @@ function getServiceAnnouncements(res) {
 
 function getClosestStation(res, location) {
 	if(location === '') {
-		var button = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
-		console.log(button);
 		return res.json({
-			speech: button,
-			displayText: button,
+			speech: 'LOCATION,
 			source: 'station',
-			type: 'quick_replies'
 		});
 	}
 	let searchLocation = encodeURI(location + ", CA");
