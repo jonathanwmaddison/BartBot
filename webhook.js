@@ -102,9 +102,10 @@ function sendToMessenger(message, sender) {
 }
 function handleAISuccess(response, sender){
 	let aiText = response.result.fulfillment.speech;
+	let type = response.result.fulfillment.type || "";
 	let message;
 	console.log(typeof aiText, 'from ai success')
-	typeof aiText === 'object' ? message = aiText : message = { text: aiText}
+	type === 'quick_replies' ? message = aiText : message = { text: aiText}
 	console.log('message from ai sucess', message)
 	let id = {id: sender}	
 	sendToMessenger(message, id)
@@ -184,7 +185,8 @@ function getClosestStation(res, location) {
 		return res.json({
 			speech: button,
 			displayText: button,
-			source: 'station'
+			source: 'station',
+			type: 'quick_replies'
 		});
 	}
 	let searchLocation = encodeURI(location + ", CA");
