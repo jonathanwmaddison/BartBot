@@ -34,12 +34,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'))
-//Landing page
+
+//	Landing page
 app.get('/', (req,res)=>{
   res.sendFile( __dirname + '/public/index.html')
 })
 
-//Webhook to connect bot to messenger
+//	Webhook to connect bot to messenger
 app.get('/webhook', (req, res) => {
   if (req.query['hub.mode'] && req.query['hub.verify_token'] === 'tuxedo_cat') {
     res.status(200).send(req.query['hub.challenge']);

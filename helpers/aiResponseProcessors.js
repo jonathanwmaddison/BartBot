@@ -2,7 +2,10 @@ const BART = require('../BART/BART');
 const request = require('request');
 
 const aiResponseProcessors = {}
-
+/**
+ *  provides a list of any BART service announcements.
+ * @param {object} res A response object from apiai 
+ */
 aiResponseProcessors.getServiceAnnouncements = function (res) {
   BART.getServiceAnnouncements( function callback(err, json){
     if(err){
@@ -22,6 +25,11 @@ aiResponseProcessors.getServiceAnnouncements = function (res) {
     }
   })
 }
+/**
+ * Makes call to openweather api to check weather
+ * @param {object} res A response object from apiai that will be sent back to messenger
+ * @param {object} req A request object from apiai that includes apiai's json packet after proccessing the users message.
+ */
 aiResponseProcessors.getWeather = function(res, req) {
 	let city = req.body.result.parameters['geo-city-us'];
 	let apikey = process.env.WEATHER_API;
@@ -47,6 +55,11 @@ aiResponseProcessors.getWeather = function(res, req) {
 	})
 }
 
+/**
+ * Sends user location to google api to get lat and long, and then sends data to BART api to find the closest station. If no location, 'LOCATION' is sent back which triggers the bot to send back a share location button to the user.
+ * @param {object} res A response object from apiai that will be sent back to messenger
+ * @param {string} location The api.ai coded location, if empty a button will be send back asking the user to share location.
+ */
 aiResponseProcessors.getClosestStation = function(res, location) {
 	if(location === '') {
 		return res.json({
@@ -82,6 +95,10 @@ aiResponseProcessors.getClosestStation = function(res, location) {
   	});
 }
 
+/**
+ * Makes call to BART api to get a list of all of the stations
+ * @param {object} res A response object from apiai that will be sent back to messenger
+ */
 aiResponseProcessors.getAllStations = function (res) {
   BART.getStations( function callback(err, json){
     if (err) console.log(err)
@@ -96,6 +113,11 @@ aiResponseProcessors.getAllStations = function (res) {
   })
 }
 
+/**
+ * Makes call to BART api to find the next train between a starting station and destination station
+ * @param {object} res A response object from apiai that will be sent back to messenger
+ * @param {object} abbr Includes abbrA and abbrB station abbreviations that.
+ */
 aiResponseProcessors.getConnectionData = function(res, abbr) {
   BART.getConnectionData(abbr, function callback(err, json){
     if (err){
@@ -114,7 +136,7 @@ aiResponseProcessors.getConnectionData = function(res, abbr) {
 			})
 
     }
-  })
+  });
 }
 
 module.exports = aiResponseProcessors;
