@@ -104,7 +104,7 @@ function handleAISuccess(response, sender){
 	var aiText = response.result.fulfillment.speech;
 	let id = {id: sender};	
 	if(aiText === 'LOCATION') {
-		let button = {text: 'Please share your location', quick_replies: [{content_type: 'location'}]}
+		let button = {text: 'Please share your location', 'quick_replies': [{'content_type': 'location',}]}
 		return sendToMessenger(button, id);
 	}
 	let message = { text: aiText}
