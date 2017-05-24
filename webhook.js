@@ -89,7 +89,6 @@ function preProcessAIResponses(req, res) {
 	}
 }
 function sendToMessenger(message, sender) {
-	console.log(message, "message")
 	request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.FACEBOOK_TOKEN},
@@ -112,6 +111,7 @@ function handleAISuccess(response, sender){
 }
 
 function sendToAI(event) {
+	console.log(event)
 	let sender = event.sender.id;
 	let text = event.message.text;
 	//set set up of api.ai
