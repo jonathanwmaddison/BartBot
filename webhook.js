@@ -181,7 +181,7 @@ function getServiceAnnouncements(res) {
 }
 
 function getClosestStation(res, location) {
-	if(searchLocation === '') {
+	if(location === '') {
 		res.json({
 			speech: {text: 'Please share your location', quick_replies: [{content_type: 'location'}]},
 			source: 'station'
